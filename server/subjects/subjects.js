@@ -12,7 +12,7 @@ const dbconnection = mysql.createPool({
 
 // Attempt to catch disconnects 
 dbconnection.on('connection', function (connection) {
-    console.log('connected to Mysql');
+    console.log('connected to Mysql database');
   
     connection.on('error', function (err) {
       console.error(new Date(), 'MySQL error', err.code);

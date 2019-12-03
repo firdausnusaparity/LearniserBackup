@@ -2,39 +2,38 @@ const router = require('express').Router();
 const mysql = require('mysql')
 
 //connect mysql db
-const pool = mysql.createPool({
-    connectionLimit: 500,
+const connection = mysql.createConnection({
     host: 'us-cdbr-iron-east-05.cleardb.net',
     user: 'b1fadc3c9ec71c',
     password: 'c4325777',
     database: 'heroku_dd0c314e35a5b93'
 });
-function get_allsubjects(req,res) {
-    // connection will be acquired automatically
-    pool.query('SELECT * FROM subjects', function(err, result) {
-    if (err) {
-        res.send(err);
-    }
-        res.send(result);
-    });
-}
+connection.connect(function(err) {
+    if (err) throw err;
+    console.log('connected to mysql database')
+})
+    
 
-function get_allcategory(req,res) {
-    // connection will be acquired automatically
-    pool.query('SELECT category FROM subjects', function(err, result) {
-    if (err) {
-        res.send(err);
-    }
-        res.send(result);
-    });
-}
-
-router.get('/', function(req, res) {
-    get_allsubjects(req, res);
+router.get('/', (req, res) => {
+    connection.query('SELECT * FROM subjects', (err, result, field) => {
+        connection.end()
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
 })
 
 router.get('/category', (req, res) => {
-    get_allcategory(req, res);
+    connection.query('SELECT category FROM subjects', (err, result, field) => {
+        connection.end()
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
 })
 
 

@@ -11,11 +11,11 @@ const pool = mysql.createPool({
 });
 function get_allsubjects(req,res) {
     // connection will be acquired automatically
-    pool.query('SELECT * FROM subjects', (err, result, field) => {
-        if (!err)
-            res.send(result);
-        else
-            res.send(err);
+    pool.query('SELECT * FROM subjects', function(err, result) {
+    if (err) {
+        res.send(err);
+    }
+        res.send(result);
     });
 }
     

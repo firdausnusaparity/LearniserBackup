@@ -12,7 +12,7 @@ const middlewares = require('./routes/middlewares');
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.connect(
-  'mongodb+srv://admin:admin@cluster0-9fhit.mongodb.net/test?retryWrites=true&w=majority',
+  'mongodb://admin:admin@cluster0-shard-00-00-9fhit.mongodb.net:27017,cluster0-shard-00-01-9fhit.mongodb.net:27017,cluster0-shard-00-02-9fhit.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
 const db = mongoose.connection;

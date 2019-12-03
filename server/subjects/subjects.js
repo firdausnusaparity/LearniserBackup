@@ -3,10 +3,10 @@ const mysql = require('mysql')
 
 //connect mysql db
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'firdaus246',
-    database: 'studyapp_db'
+    host: 'us-cdbr-iron-east-05.cleardb.net',
+    user: 'b1fadc3c9ec71c',
+    password: 'c4325777',
+    database: 'heroku_dd0c314e35a5b93'
 });
 connection.connect(function(err) {
     if (err) throw err;

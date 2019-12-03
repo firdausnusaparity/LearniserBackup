@@ -43,7 +43,7 @@ if(process.env.NODE_ENV === 'production') {
   app.use(express.static(__dirname + '/public/'));
 
   // Handle Single Page Application
-  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/indec.html'));
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
 
 const port = process.env.PORT || 5000;

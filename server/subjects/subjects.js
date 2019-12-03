@@ -9,31 +9,19 @@ const pool = mysql.createPool({
     password: 'c4325777',
     database: 'heroku_dd0c314e35a5b93'
 });
-function handle_database(req,res) {
-   
-    pool.getConnection(function(err,connection){
-        if (err) {
-          res.json({"code" : 100, "status" : "Error in connection database"});
-          return;
-        }  
-
-        console.log('connected to mysql');
-
-        connection.on('error', function(err) {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;    
-        });
-  });
+function get_allsubjects(req,res) {
+    // connection will be acquired automatically
+    pool.query('SELECT * FROM subjects', (err, result, field) => {
+        if (!err)
+            res.send(result);
+        else
+            res.send(err);
+    });
 }
     
 
-router.get('/', (req, res) => {
-    connection.query('SELECT * FROM subjects', (err, result, field) => {
-        if (!err)
-        res.send(result);
-        else
-        res.send(err);
-    })
+router.get('/', function(req, res) => {
+    get_allsubjects(req, res);
 })
 
 router.get('/category', (req, res) => {

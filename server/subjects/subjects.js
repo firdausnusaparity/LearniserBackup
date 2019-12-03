@@ -18,19 +18,23 @@ function get_allsubjects(req,res) {
         res.send(result);
     });
 }
-    
+
+function get_allcategory(req,res) {
+    // connection will be acquired automatically
+    pool.query('SELECT category FROM subjects', function(err, result) {
+    if (err) {
+        res.send(err);
+    }
+        res.send(result);
+    });
+}
 
 router.get('/', function(req, res) {
     get_allsubjects(req, res);
 })
 
 router.get('/category', (req, res) => {
-    connection.query('SELECT category FROM subjects', (err, result, field) => {
-        if (!err)
-        res.send(result);
-        else
-        res.send(err);
-    })
+    get_allcategory(req, res);
 })
 
 

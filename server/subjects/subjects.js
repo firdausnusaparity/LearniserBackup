@@ -16,7 +16,6 @@ connection.connect(function(err) {
 
 router.get('/', (req, res) => {
     connection.query('SELECT * FROM subjects', (err, result, field) => {
-        connection.end()
         if (!err) {
             res.send(result);
         } else {
@@ -27,7 +26,6 @@ router.get('/', (req, res) => {
 
 router.get('/category', (req, res) => {
     connection.query('SELECT category FROM subjects', (err, result, field) => {
-        connection.end()
         if (!err) {
             res.send(result);
         } else {

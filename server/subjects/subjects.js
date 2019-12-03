@@ -20,7 +20,7 @@ function get_allsubjects(req,res) {
 }
     
 
-router.get('/', function(req, res) => {
+router.get('/', function(req, res) {
     get_allsubjects(req, res);
 })
 

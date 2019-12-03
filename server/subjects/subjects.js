@@ -2,16 +2,29 @@ const router = require('express').Router();
 const mysql = require('mysql')
 
 //connect mysql db
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
+    connectionLimit: 500,
     host: 'us-cdbr-iron-east-05.cleardb.net',
     user: 'b1fadc3c9ec71c',
     password: 'c4325777',
     database: 'heroku_dd0c314e35a5b93'
 });
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log('connected to mysql database')
-})
+function handle_database(req,res) {
+   
+    pool.getConnection(function(err,connection){
+        if (err) {
+          res.json({"code" : 100, "status" : "Error in connection database"});
+          return;
+        }  
+
+        console.log('connected to mysql');
+
+        connection.on('error', function(err) {      
+              res.json({"code" : 100, "status" : "Error in connection database"});
+              return;    
+        });
+  });
+}
     
 
 router.get('/', (req, res) => {
@@ -31,5 +44,6 @@ router.get('/category', (req, res) => {
         res.send(err);
     })
 })
+
 
 module.exports = router;

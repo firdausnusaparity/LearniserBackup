@@ -24,8 +24,18 @@ dbconnection.on('connection', function (connection) {
 });
     
 
-router.get('/', (req, res) => {
-    dbconnection.query('SELECT * FROM subjects', (err, result, field) => {
+router.get('/form5', (req, res) => {
+    dbconnection.query('SELECT * FROM subjects WHERE form = 5', (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.get('/form4', (req, res) => {
+    dbconnection.query('SELECT * FROM subjects WHERE form = 4', (err, result, field) => {
         if (!err) {
             res.send(result);
         } else {

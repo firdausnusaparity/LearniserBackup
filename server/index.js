@@ -9,15 +9,13 @@ const middlewares = require('./routes/middlewares');
 
 
 //connect mongodb
-mongoose.set('useCreateIndex', true);
-mongoose.set('useFindAndModify', false);
 mongoose.connect(
   'mongodb://admin:admin@cluster0-shard-00-00-9fhit.mongodb.net:27017,cluster0-shard-00-01-9fhit.mongodb.net:27017,cluster0-shard-00-02-9fhit.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  { useNewUrlParser: true, useUnifiedTopology: true,  useCreateIndex: true, }
 )
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
-db.once('open', () => console.log('connected to mongo database'));
+db.once('open', () => console.log('connected to Mongo database'));
 
 
 //middlewares

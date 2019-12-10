@@ -44,11 +44,30 @@ router.get('/form4', (req, res) => {
     })
 })
 
-router.get('/addenrolled', (req, res) => {
-    var sql = "INSERT INTO `enrolled` SET `user_id`=?, `subjects`=?, `chapter_progress`=?, `question_progress`=?, `reference_id`=?" 
-    dbconnection.query(sql, [req.user._id, req.body.subjects, req.body.chapter_progress, req.body.question_progress, req.body.reference_id],(err, result, field) => {
+router.get('/all', (req, res) => {
+    dbconnection.query('SELECT * FROM subjects', (err, result, field) => {
         if (!err) {
-            //res.send(result);
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.get('/getUserEnrolled', (req, res) => {
+    dbconnection.query('SELECT * FROM enrolled WHERE user_id = ?', [req.user._id], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.post('/addenrolled', (req, res) => {
+    var sql = "INSERT INTO `enrolled` SET `user_id`=?, `subjects`=?, `chapter_progress`=?, `question_progress`=?, `reference_id`=?" 
+    dbconnection.query(sql, [req.user._id, req.body.subjects, 0, 0, req.body.reference_id],(err, result, field) => {
+        if (!err) {
             res.send(result);
         } else {
             res.send(err);

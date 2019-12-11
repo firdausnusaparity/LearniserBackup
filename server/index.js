@@ -33,7 +33,7 @@ const subjects = require('./subjects/subjects');
 //Route middlewares
 app.use('/users', authRoute);
 app.use('/adminusers', middlewares.isLoggedIn, middlewares.isAdmin, admin);
-app.use('/subjects', subjects);
+app.use('/subjects', middlewares.isLoggedIn, subjects);
 
 //Handle production
 if(process.env.NODE_ENV === 'production') {

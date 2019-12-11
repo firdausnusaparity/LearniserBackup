@@ -75,11 +75,21 @@ router.post('/addenrolled', (req, res) => {
     })
 })
 
-router.get('/updateenrolled', (req, res) => {
+router.patch('/updateenrolled', (req, res) => {
     var sql = "UPDATE `enrolled` SET `chapter_progress` =?, `question_progress` =?, `reference_id` =? WHERE `user_id` =? && `subjects` =?"
     dbconnection.query(sql, [ req.body.chapter_progress, req.body.question_progress, req.body.reference_id, req.user._id, req.body.subjects], (err, result, field) => {
         if (!err) {
-            //res.send(result);
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.post('/deleteenrolled', (req, res) => {
+    var sql = "DELETE FROM `enrolled` WHERE `user_id` =? && `subjects` =?"
+    dbconnection.query(sql, [ req.user._id, req.body.subjects], (err, result, field) => {
+        if (!err) {
             res.send(result);
         } else {
             res.send(err);

@@ -97,8 +97,19 @@ router.post('/deleteenrolled', (req, res) => {
     })
 })
 
-router.get('/category', (req, res) => {
-    dbconnection.query('SELECT category FROM subjects', (err, result, field) => {
+router.post('/currentlearn', (req, res) => {
+    var sql = "SELECT * FROM `syllabus` WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
+    dbconnection.query(sql, [ req.body.subject_name , req.body.chapter_no, req.body.subtopic_no ], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.get('/allchapter', (req, res) => {
+    dbconnection.query('SELECT DISTINCT `chapter_no` FROM `syllabus`', (err, result, field) => {
         if (!err) {
             res.send(result);
         } else {

@@ -108,8 +108,9 @@ router.post('/currentlearn', (req, res) => {
     })
 })
 
-router.get('/allchapter', (req, res) => {
-    dbconnection.query('SELECT DISTINCT `chapter_no` FROM `syllabus`', (err, result, field) => {
+router.post('/nochaptersincurrentlearning', (req, res) => {
+    var sql = "SELECT DISTINCT `chapter_no` FROM `syllabus` WHERE `subject_name` =?"
+    dbconnection.query(sql, req.body.subject_name, (err, result, field) => {
         if (!err) {
             res.send(result);
         } else {

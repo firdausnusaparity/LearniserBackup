@@ -119,5 +119,16 @@ router.post('/nochaptersincurrentlearning', (req, res) => {
     })
 })
 
+router.post('/nosubtopicincurrentlearning', (req, res) => {
+    var sql = "SELECT DISTINCT `subtopic_no` FROM `syllabus` WHERE `subject_name` =? && `chapter_no` =?"
+    dbconnection.query(sql, [req.body.subject_name, req.body.chapter_no], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
 
 module.exports = router;

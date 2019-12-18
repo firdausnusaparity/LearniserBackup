@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const mysql = require('mysql')
+const mysql = require('mysql');
+const middlewares = require('../routes/middlewares');
 
 //connect mysql db
 const dbconnection = mysql.createPool({
@@ -23,7 +24,7 @@ dbconnection.on('connection', function (connection) {
   
 });
     
-
+//Default section
 router.get('/form5', (req, res) => {
     dbconnection.query('SELECT * FROM subjects WHERE form = 5', (err, result, field) => {
         if (!err) {
@@ -54,6 +55,7 @@ router.get('/all', (req, res) => {
     })
 })
 
+// User section
 router.get('/getUserEnrolled', (req, res) => {
     dbconnection.query('SELECT * FROM enrolled WHERE user_id = ?', [req.user._id], (err, result, field) => {
         if (!err) {
@@ -109,7 +111,7 @@ router.post('/currentlearn', (req, res) => {
 })
 
 router.post('/currentquestion', (req, res) => {
-    var sql = "SELECT `questions`, `option_1`, `option_2`, `option_3`, `option_4`, `correct_answer` FROM `questions` WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
+    var sql = "SELECT `questions`, `option_1`, `option_2`, `option_3`, `option_4`, `correct_answer` FROM `questions` WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =? ORDER BY RAND()"
     dbconnection.query(sql, [ req.body.subject_name , req.body.chapter_no, req.body.subtopic_no ], (err, result, field) => {
         if (!err) {
             res.send(result);
@@ -131,6 +133,40 @@ router.post('/nochaptersincurrentlearning', (req, res) => {
 })
 
 router.post('/nosubtopicincurrentlearning', (req, res) => {
+    var sql = "SELECT DISTINCT `subtopic_no` FROM `syllabus` WHERE `subject_name` =? && `chapter_no` =?"
+    dbconnection.query(sql, [req.body.subject_name, req.body.chapter_no], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+// Admin section
+router.post('/currentediting', middlewares.isAdmin, (req, res) => {
+    var sql = "SELECT * FROM `syllabus` WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
+    dbconnection.query(sql, [ req.body.subject_name , req.body.chapter_no, req.body.subtopic_no ], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.post('/nochaptersincurrentediting', middlewares.isAdmin, (req, res) => {
+    var sql = "SELECT DISTINCT `chapter_no` FROM `syllabus` WHERE `subject_name` =?"
+    dbconnection.query(sql, req.body.subject_name, (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.post('/nosubtopicincurrentediting', middlewares.isAdmin, (req, res) => {
     var sql = "SELECT DISTINCT `subtopic_no` FROM `syllabus` WHERE `subject_name` =? && `chapter_no` =?"
     dbconnection.query(sql, [req.body.subject_name, req.body.chapter_no], (err, result, field) => {
         if (!err) {

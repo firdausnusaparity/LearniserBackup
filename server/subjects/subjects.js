@@ -178,8 +178,8 @@ router.post('/nosubtopicincurrentediting', middlewares.isAdmin, (req, res) => {
 })
 
 router.post('/updatesubjectsyllabus', middlewares.isAdmin, (req, res) => {
-    var sql = "UPDATE `syllabus` SET `subtopic_title` =?, `content` =? WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
-    dbconnection.query(sql, [ req.body.subtopic_title, req.body.content, req.body.subject_name, req.body.chapter_no, req.body.subtopic_no], (err, result, field) => {
+    var sql = "UPDATE `syllabus` SET `subtopic_title` =?, `content` =?, `image_link` =? WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
+    dbconnection.query(sql, [ req.body.subtopic_title, req.body.content, req.body.imageURL, req.body.subject_name, req.body.chapter_no, req.body.subtopic_no], (err, result, field) => {
         if (!err) {
             res.send(result);
         } else {

@@ -188,5 +188,26 @@ router.post('/updatesubjectsyllabus', middlewares.isAdmin, (req, res) => {
     })
 })
 
+router.post('/currentadminquestion', middlewares.isAdmin, (req, res) => {
+    var sql = "SELECT `id`, `questions`, `option_1`, `option_2`, `option_3`, `option_4`, `correct_answer` FROM `questions` WHERE `subject_name` =? && `chapter_no` =? && `subtopic_no` =?"
+    dbconnection.query(sql, [ req.body.subject_name , req.body.chapter_no, req.body.subtopic_no ], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
+router.post('/updatequestion', middlewares.isAdmin, (req, res) => {
+    var sql = "UPDATE `questions` SET `questions` =?, `option_1` =?, `option_2` =?, `option_3` =?, `option_4` =?, `correct_answer` =? WHERE `id` =? && `subject_name` =? && `chapter_no` =? && `subtopic_no` =? && `subtopic_title` =?"
+    dbconnection.query(sql, [ req.body.question.questions, req.body.question.option_1, req.body.question.option_2, req.body.question.option_3, req.body.question.option_4, req.body.question.correct_answer, req.body.question.id, req.body.subject_name, req.body.chapter_no, req.body.subtopic_no, req.body.subtopic_title], (err, result, field) => {
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send(err);
+        }
+    })
+})
 
 module.exports = router;

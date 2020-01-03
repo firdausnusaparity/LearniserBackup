@@ -1,6 +1,10 @@
 const router = require('express').Router();
 const mysql = require('mysql');
 const middlewares = require('../routes/middlewares');
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+const aws = require('aws-sdk');
 
 //connect mysql db
 const dbconnection = mysql.createPool({
@@ -219,6 +223,69 @@ router.post('/addquestion', middlewares.isAdmin, (req, res) => {
             res.send(err);
         }
     })
+})
+
+//imageupload
+aws.config.update({
+    accessKeyId: "AKIA37SVVXBHY2LZNYLU",
+    secretAccessKey: "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",
+    region: "ap-northeast-1"
+});
+    
+const fileFilter = function (req, file, cb) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+        
+    if (!allowedTypes.includes(file.mimetype)) {
+        const error = new Error("Wrong file type");
+        error.code = "LIMIT_FILE_TYPES";
+        return cb(error, false);
+    }
+        cb(null, true);
+};
+    
+const MAX_SIZE = 10000000;
+const upload = multer ({
+    dest: './uploads/',
+    fileFilter,
+    limits: {
+        fileSize: MAX_SIZE
+    }
+});
+    
+router.post('/uploadimage', middlewares.isAdmin, upload.single('file'), async(req, res) => {
+    const s3 = new aws.S3();
+    const now = Date.now();
+    
+    try {
+    const buffer = await sharp(req.file.path)
+    .resize(300)
+    .toBuffer();
+    
+    const s3res = await s3.upload({
+        Bucket: "cloud-cube",
+        Key: `v67u4ja0uqca/public/${req.file.originalname}`,
+        Body: buffer,
+        ACL: "public-read"
+    }).promise();
+    
+    fs.unlink(req.file.path, () => {
+            res.json({ file: s3res.Location });
+        })
+        } catch (err) {
+            res.status(422).json({err});
+        }
+    });
+
+router.use(function(err, req, res, next) {
+    if (err.code === "LIMIT_FILE_TYPES") {
+        res.status(422).json({error: "Only images are allowed"});
+        return;
+    }
+
+    if (err.code === "LIMIT_FILE_SIZE") {
+        res.status(422).json({error: `Too large, Max size is ${MAX_SIZE/1000}Kb`});
+        return;
+    }
 })
 
 module.exports = router;

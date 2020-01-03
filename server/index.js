@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const middlewares = require('./routes/middlewares');
@@ -23,7 +24,8 @@ db.once('open', () => console.log('connected to Mongo database'));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(middlewares.checkTokenSetUser)
+app.use(middlewares.checkTokenSetUser);
+app.use("/static", express.static(path.join(__dirname, "static")));
 
 //import routes
 const authRoute = require('./routes/auth');
